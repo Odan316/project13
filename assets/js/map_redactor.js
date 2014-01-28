@@ -141,31 +141,12 @@ $(function(){
             async: false,
             url: window.url_root+"project13/game/saveMap",
             dataType: 'json',
-            data: { 'game_id': window.map_redactor.game_id,
-                    'map_data': $.toJSON(window.map_redactor.map) },
+            data: { 'map_data': $.toJSON(window.map_redactor.map) },
             success: function(data){
                 if(data == 1){
                     alert('Успешно сохранено!');
                 } else {
                     alert('Сохранение не удалось!');
-                }
-            }
-        });
-    });
-
-    $(document).on('click', '#export', function(){
-        $.ajax({
-            type: "POST",
-            async: false,
-            url: window.url_root+"project13/game/exportMap",
-            dataType: 'json',
-            data: { 'game_id': window.map_redactor.game_id,
-                'map_data': $.toJSON(window.map_redactor.map) },
-            success: function(data){
-                if(data == 1){
-                    alert('Успешно экпортировано!');
-                } else {
-                    alert('Экспортировать не удалось!');
                 }
             }
         });
@@ -178,7 +159,7 @@ function redactorMapLoad(){
         async: false,
         url: window.url_root+"project13/game/getFullMapInfo",
         dataType: 'json',
-        data: { 'game_id': window.map_redactor.game_id},
+        data: {},
         success: function(json){
             if(json && Object.size(json)){
                 window.map_redactor.map = json;

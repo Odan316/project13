@@ -48,7 +48,7 @@ class GameController extends Controller
         $this->user_model = Users::model()->with('person')->findByPk($user->getState('uid'));
         $this->game_model = Games::model()
             ->with('master_user', 'players_users')
-            ->findByPk($user->getState('game_role'));
+            ->findByPk($game_id);
 
         return parent::beforeAction($action);
     }
@@ -82,9 +82,10 @@ class GameController extends Controller
         $ClientScript->registerScriptFile($this->assetsBase.'/main/js/jquery.json-2.4.js');
         $ClientScript->registerScriptFile($this->module->assetsBase.'/js/map_redactor.js');
 
-        $game_id = Yii::app()->request->cookies['game_id']->value;
+        $game_id = $this->game_model->id;
         $turn = $this->game_model->last_turn;
         $map = new P13Map($game_id, $turn);
+        
         if(!$map->exists() && isset($_POST['create_map'])){
             $map->createBlankMap(
                 htmlspecialchars($_POST['map_width']),
@@ -142,15 +143,10 @@ class GameController extends Controller
 
     public function actionCreate_default_map()
     {
-        $game_id = Yii::app()->request->cookies['game_id']->value;
-        $turn_id = 0;
-
         $map = new P13Map();
         $map->loadDefaultMap();
 
-        $map->setGameId($game_id);
-        $map->setTurn($turn_id);
-        $map->saveMap();
+        $map->saveMap($this->game_model->id, 0);
 
         $this->redirect($this->createUrl("game/map_redactor"));
     }
@@ -165,9 +161,7 @@ class GameController extends Controller
      */
     public function actionGetFullMapInfo()
     {
-        $game_id = htmlspecialchars($_POST['game_id']);
-        $turn = 0;
-        $map = new P13Map($game_id, $turn);
+        $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
         $map_array = $map->getFullMapArray();
 
         echo json_encode($map_array);
@@ -178,9 +172,7 @@ class GameController extends Controller
      */
     public function actionGetMapObjectGFXs()
     {
-        $game_id = Yii::app()->request->cookies['game_id'];
-        $turn = 0;
-        $map = new P13Map($game_id, $turn);
+        $map = new P13Map();
         $object_type_id = htmlspecialchars($_POST['map_object_type']);
 
         echo json_encode($map->makeObjectTypeGFX($object_type_id));
@@ -191,12 +183,10 @@ class GameController extends Controller
      */
     public function actionSaveMap()
     {
-        $game_id = htmlspecialchars($_POST['game_id']);
-        $turn = 0;
-        $map_db = new P13Map($game_id, $turn);
+        $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
         $map_data = json_decode($_POST['map_data']);
-        $map_db->setData($map_data);
+        $map->setData($map_data);
 
-        echo $map_db->saveMap();
+        echo $map->saveMap();
     }
 }
