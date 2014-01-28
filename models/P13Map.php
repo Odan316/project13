@@ -228,7 +228,7 @@ class P13Map extends P13Model{
     private function buildMapArray($cell_data)
     {
         $map_array = array();
-        $map_objects = self::getObjectTypesList();
+        $map_objects = (new P13Config($this->game_id))->getConfigAsArray('land_obj');
         foreach($cell_data as $row){
             foreach($row as $cell){
                 $map_array[$cell['y']][$cell['x']]['objects'] = array();
@@ -309,16 +309,6 @@ class P13Map extends P13Model{
     }
 
     /**
-     * Возвращает массив со списком типов объектов карты
-     *
-     * @return array
-     */
-    public static function getObjectTypesList()
-    {
-        return self::get_common("land_obj")[0];
-    }
-
-    /**
      * Возвращает информацию о типе объекта
      *
      * @param $object_type_id ИД типа объекта
@@ -327,9 +317,10 @@ class P13Map extends P13Model{
      *
      * TODO: Переписать всю цепочку так, что бы передавать полную инфу а не только соответствие ИД - ссылка на графику
      */
-    public function getObjectTypeInfo($object_type_id)
+    public function makeObjectTypeGFX($object_type_id)
     {
-        $object_type = self::get_common("land_obj")[0][$object_type_id];
+        $map_objects = (new P13Config($this->game_id))->getConfigAsArray('land_obj');
+        $object_type = $map_objects[$object_type_id];
         $return_list = array();
         foreach($object_type['gfx'] as $gfx_id => $gfx){
             if($object_type['category'] == 'landtype'){
@@ -340,23 +331,6 @@ class P13Map extends P13Model{
         }
 
         return $return_list;
-    }
-
-    /**
-     * Возвращает массив с загруженным в него файлом общих параметров
-     *
-     * @param $filename
-     *
-     * @return mixed
-     */
-    private static function get_common($filename)
-    {
-        $file_path = self::stat()->_common_path."/".$filename.".json";
-        $file = fopen($file_path, "r");
-        $json_string = fread($file, filesize($file_path));
-        fclose($file);
-
-        return json_decode($json_string, true);
     }
 
 

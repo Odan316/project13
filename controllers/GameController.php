@@ -92,7 +92,7 @@ class GameController extends Controller
             );
         }
         $map_info = $map->getMapInfo();
-        $map_object_types = $map::getObjectTypesList();
+        $map_object_types = (new P13Config($game_id))->getConfigAsArray('land_obj');
 
         $this->render('map_redactor', array(
             'map_info' => $map_info,
@@ -183,7 +183,7 @@ class GameController extends Controller
         $map = new P13Map($game_id, $turn);
         $object_type_id = htmlspecialchars($_POST['map_object_type']);
 
-        echo json_encode($map->getObjectTypeInfo($object_type_id));
+        echo json_encode($map->makeObjectTypeGFX($object_type_id));
     }
 
     /**
