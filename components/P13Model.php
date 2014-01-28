@@ -78,7 +78,7 @@ class P13Model {
      *
      * @return bool
      */
-    private function fileExists()
+    protected function fileExists()
     {
         return (is_dir($this->model_path) && file_exists($this->model_path.$this->model_file));
     }
@@ -92,7 +92,7 @@ class P13Model {
     {
         $file = false;
 
-        if($dir = !is_dir($this->model_path)) {
+        if(!($dir = is_dir($this->model_path))) {
             $dir = mkdir($this->model_path, 0777, 1);
         }
 

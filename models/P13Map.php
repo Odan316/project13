@@ -5,7 +5,7 @@
  * Класс для работы с экземпляром карты Проекта13
  */
 
-class P13Map {
+class P13Map extends P13Model{
 
     /**
      * @var P13Map Переменная для хранения статического экземпляра класса для работы со статическими функциями
@@ -15,32 +15,22 @@ class P13Map {
     /**
      * @var int ИД игры
      */
-    private $_game_id;
+    public $game_id;
 
     /**
      * @var int ИД хода
      */
-    private $_turn;
-
-    /**
-     * @var string Путь к папке данных игры
-     */
-    private $_common_path;
-
-    /**
-     * @var string Путь к папке карт игры
-     */
-    private $_map_path;
-
-    /**
-     * @var string Имя файла карты
-     */
-    private $_map_file;
+    public $turn;
 
     /**
      * @var array Ячейки карты
      */
     private $_cells = false;
+
+    /**
+     * @var string Путь к папке данных игры TODO: удалить
+     */
+    private $_common_path;
 
     /**
      * Создает пустой экземпляр карты для доступа к статическим методам, не требующим загруженной карты
@@ -58,45 +48,89 @@ class P13Map {
     /**
      * Конструктор экземпляра карты
      *
-     * @param $game_id
-     * @param $turn
+     * @param null|integer $game_id
+     * @param null|integer $turn
      */
-    public function __construct($game_id, $turn)
+    public function __construct($game_id = null, $turn = null)
     {
-        if($game_id && $turn !== false){
-            $this->_game_id = $game_id;
-            $this->_turn = $turn;
-            $this->_map_path = Yii::app()->params['rootPath']."/protected/modules/project13/data/games/".$game_id."/maps/";
-            $this->_map_file = "turn_".$turn.".json";
+        $this->loadMap($game_id, $turn);
 
-            $this->loadMap();
-            //CVarDumper::dump($this->_cells, 5, 1);
-        }
-
+        /** TODO: delete */
         $this->_common_path = Yii::app()->params['rootPath']."/protected/modules/project13/data/common";
     }
 
     /**
-     * Загрузка карты из файла в свойство класса
+     * Условие для получения конкретной игры
+     *
+     * @param integer $game_id
+     *
+     * @return $this
      */
-    private function loadMap()
+    public function setGameId($game_id)
     {
-        if(!is_dir($this->_map_path)) {
-            mkdir($this->_map_path, 0777, 1);
+        ($game_id !== null) ? $this->game_id = $game_id : null;
+
+        return $this;
+    }
+
+    /**
+     * Условие для получения конкретного хода
+     *
+     * @param integer $turn
+     *
+     * @return $this
+     */
+    public function setTurn($turn)
+    {
+        ($turn !== null) ? $this->turn = $turn : null;
+
+        return $this;
+    }
+
+    /**
+     * Установка путей к папке и файлу
+     *
+     * @param null|integer $game_id
+     * @param null|integer $turn
+     */
+    protected function setPaths($game_id = null, $turn = null)
+    {
+        $this->setGameId($game_id);
+        $this->setTurn($turn);
+
+        if($this->game_id !== null && $this->turn !== null){
+            $this->model_path = Yii::app()->getModulePath()."/project13/data/games/".$this->game_id."/turns/".$this->turn."/";
+            $this->model_file = "map.json";
         }
+    }
 
-        if(file_exists($this->_map_path.$this->_map_file)){
-            $map_file = fopen($this->_map_path.$this->_map_file, "r");
-            if(filesize($this->_map_path.$this->_map_file)) {
-                $map_string = fread($map_file, filesize($this->_map_path.$this->_map_file));
-            } else {
-                $map_string = "[]";
-            }
+    /**
+     * Загрузка карты из файла в свойство класса
+     *
+     * @param null|integer $game_id
+     * @param null|integer $turn
+     */
+    private function loadMap($game_id = null, $turn = null)
+    {
+        $this->setPaths($game_id, $turn);
 
-            fclose($map_file);
+        $this->loadFromFile();
+    }
 
-            $this->_cells = json_decode($map_string, true);
-        }
+    /**
+     * Загрузка сырых данных в массив клеток
+     */
+    protected function processRawData()
+    {
+        $this->_cells = $this->raw_data;
+    }
+
+    /**
+     * Выгрузка массив клеток в сырые данные
+     */
+    protected function parseRawData()
+    {
+        $this->raw_data = $this->_cells;
     }
 
     /**
@@ -106,14 +140,14 @@ class P13Map {
      */
     public function exists()
     {
-        return ($this->_cells !== false);
+        return $this->fileExists();
     }
 
     /**
      * Создание чистой карты с заданными размерами
      *
-     * @param $width
-     * @param $height
+     * @param integer $width
+     * @param integer $height
      */
     public function createBlankMap($width, $height)
     {
@@ -133,40 +167,18 @@ class P13Map {
                 $this->_cells[$y][$x] = $cell;
             }
         }
-        $map_json = json_encode($map_array);
-
-        if(!is_dir($this->_map_path)) {
-            mkdir($this->_map_path, 0777, 1);
-        }
-        $map_file = fopen($this->_map_path.$this->_map_file, "w");
-
-        fwrite($map_file, $map_json);
-        fclose($map_file);
+        $this->saveMap();
     }
 
-    public function createDefaultMap()
+
+    public function loadDefaultMap()
     {
-        $map_json = "[]";
+        $this->model_path = Yii::app()->getModulePath()."/project13/data/common/";
+        $this->model_file = "default_map.json";
 
-        $default_map_path = Yii::app()->params['rootPath']."/protected/modules/project13/data/common/default_map.json";
-        if(file_exists($default_map_path)){
-            $map_file = fopen($default_map_path, "r");
-            if(filesize($default_map_path)) {
-                $map_json = fread($map_file, filesize($default_map_path));
-            }
-            fclose($map_file);
-        }
-
-        if(!is_dir($this->_map_path)){
-            mkdir($this->_map_path, 0777, 1);
-        }
-
-        $map_file = fopen($this->_map_path.$this->_map_file, "w");
-        $res = fwrite($map_file, $map_json);
-        fclose($map_file);
-
-        echo (boolean)$res;
+        $this->loadMap();
     }
+
     /**
      * Возвращает массив с информацией о карте
      *
@@ -247,15 +259,13 @@ class P13Map {
     }
 
     /**
-     * Сохраняет карту в файл
+     * Загружает данные карты в модель
      *
-     * @param $map_data Массив данных о ячейках карты
-     *
-     * @return bool
+     * @param $map_data
      */
-    public function saveMap($map_data)
+    public function setData($map_data)
     {
-        $map_array = array();
+        $this->_cells = array();
         foreach($map_data as $y => $row){
             foreach($row as $x => $cell){
                 $objects = array();
@@ -275,25 +285,27 @@ class P13Map {
                         }
                     }
                 }
-                $map_array[$y][$x] = array(
+                $this->_cells[$y][$x] = array(
                     'x' => $x,
                     'y' => $y,
                     'objects' => $objects
                 );
             }
         }
-        //CVarDumper::dump($map_array, 5, 1);
-        $map_json = json_encode($map_array);
+    }
 
-        if(!is_dir($this->_map_path)){
-            mkdir($this->_map_path, 0777, 1);
-        }
-
-        $map_file = fopen($this->_map_path.$this->_map_file, "w");
-        $res = fwrite($map_file, $map_json);
-        fclose($map_file);
-
-        echo (boolean)$res;
+    /**
+     * Сохраняет карту в файл
+     *
+     * @param null|integer $game_id
+     * @param null|integer $turn
+     *
+     * @return bool
+     */
+    public function saveMap($game_id = null, $turn = null)
+    {
+        $this->setPaths($game_id, $turn);
+        return $this->saveToFile();
     }
 
     /**

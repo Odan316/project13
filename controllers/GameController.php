@@ -83,8 +83,8 @@ class GameController extends Controller
         $ClientScript->registerScriptFile($this->module->assetsBase.'/js/map_redactor.js');
 
         $game_id = Yii::app()->request->cookies['game_id']->value;
-        $turn_id = 0;
-        $map = new P13Map($game_id, $turn_id);
+        $turn = $this->game_model->last_turn;
+        $map = new P13Map($game_id, $turn);
         if(!$map->exists() && isset($_POST['create_map'])){
             $map->createBlankMap(
                 htmlspecialchars($_POST['map_width']),
@@ -145,9 +145,12 @@ class GameController extends Controller
         $game_id = Yii::app()->request->cookies['game_id']->value;
         $turn_id = 0;
 
-        $map = new P13Map($game_id, $turn_id);
+        $map = new P13Map();
+        $map->loadDefaultMap();
 
-        $map->createDefaultMap();
+        $map->setGameId($game_id);
+        $map->setTurn($turn_id);
+        $map->saveMap();
 
         $this->redirect($this->createUrl("game/map_redactor"));
     }
@@ -192,7 +195,8 @@ class GameController extends Controller
         $turn = 0;
         $map_db = new P13Map($game_id, $turn);
         $map_data = json_decode($_POST['map_data']);
+        $map_db->setData($map_data);
 
-        echo $map_db->saveMap($map_data);
+        echo $map_db->saveMap();
     }
 }
