@@ -55,13 +55,21 @@ class GameController extends Controller
 
     public function actionIndex()
     {
-        $this->actionTribe();
+        if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
+            $this->actionGM();
+        } else {
+            $this->actionTribe();
+        }
     }
 
     public function actionGM()
     {
-        $players = Games::model()->players_users;
-        $this->render('gm', array('players' => $players));
+        if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
+            $players = Games::model()->players_users;
+            $this->render('gm', array('players' => $players));
+        } else {
+            $this->actionNoAccess();
+        }
     }
 
     /**
@@ -96,9 +104,7 @@ class GameController extends Controller
 
     public function actionTribe()
     {
-        $this->render('index', array(
-            'user_model' => $this->user_model,
-            'game_model' => $this->game_model,
+        $this->render('tribe', array(
         ));
     }
 
@@ -144,6 +150,11 @@ class GameController extends Controller
         $map->createDefaultMap();
 
         $this->redirect($this->createUrl("game/map_redactor"));
+    }
+
+    public function actionNoAccess()
+    {
+        $this->render('no_access');
     }
 
     /**

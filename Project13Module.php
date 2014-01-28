@@ -12,6 +12,7 @@ class Project13Module extends CWebModule
             'project13.map.*',
 		));
 	}
+
     /**
      * метод для работы с ассетами, взят здесь : http://habrahabr.ru/post/139166/
      */

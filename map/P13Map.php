@@ -18,7 +18,7 @@ class P13Map {
     private $_game_id;
 
     /**
-     * @var int ИД игры
+     * @var int ИД хода
      */
     private $_turn;
 
