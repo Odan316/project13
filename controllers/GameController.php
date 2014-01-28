@@ -1,14 +1,28 @@
 <?php
 /**
- * Class GameController Контроллер для работы в Кабинете (Ведущего или Игрока)
+ * Class GameController
+ *
+ * Контроллер для работы в Кабинете (Ведущего или Игрока)
  */
 class GameController extends Controller
 {
-    /** @var $user_model Users */
+    /**
+     * Модель пользователя (из базового движка)
+     * @var $user_model Users
+     */
     private $user_model;
-    /** @var $game_model Games */
+
+    /**
+     * Модель игры (из базового движка)
+     * @var $game_model Games
+     */
     private $game_model;
 
+    /**
+     * Перед загрузкой контроллера необходимо
+     * - установить общий layout модуля
+     * - подключить общие стили и JS
+     */
     public function init()
     {
         $this->layout = 'main';
@@ -20,6 +34,16 @@ class GameController extends Controller
         parent::init();
     }
 
+    /**
+     * Перед загрузкой действия необходимо
+     * - проверить наличие или попытаться установить ИД игры в куки
+     * - проверить права пользователя на доступ к игре
+     * - загрузить базовые модели пользователя и игры     *
+     *
+     * @param CAction $action
+     *
+     * @return bool
+     */
     public function beforeAction($action)
     {
         $game_id = false;
@@ -53,6 +77,11 @@ class GameController extends Controller
         return parent::beforeAction($action);
     }
 
+    /**
+     * По умолчанию, в зависимости от роли мы грузим
+     * - либо страницу ГМа (для ГМа),
+     * - либо страницу племени (для остальных)
+     */
     public function actionIndex()
     {
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
@@ -62,8 +91,12 @@ class GameController extends Controller
         }
     }
 
+    /**
+     * Страница ГМа (только для ГМа)
+     */
     public function actionGM()
     {
+        // Сначала проверяем роль
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
             $players = Games::model()->players_users;
             $this->render('gm', array('players' => $players));
@@ -73,34 +106,38 @@ class GameController extends Controller
     }
 
     /**
-     * Отображает страницу редактора карт
+     * Страница с редактором карт (только для ГМа)
      */
     public function actionMap_redactor()
     {
-        /** @var $ClientScript CClientScript */
-        $ClientScript = Yii::app()->clientScript;
-        $ClientScript->registerScriptFile($this->assetsBase.'/main/js/jquery.json-2.4.js');
-        $ClientScript->registerScriptFile($this->module->assetsBase.'/js/map_redactor.js');
+        // Сначала проверяем роль
+        if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
+            /** @var $ClientScript CClientScript */
+            $ClientScript = Yii::app()->clientScript;
+            $ClientScript->registerScriptFile($this->assetsBase.'/main/js/jquery.json-2.4.js');
+            $ClientScript->registerScriptFile($this->module->assetsBase.'/js/map_redactor.js');
 
-        $game_id = $this->game_model->id;
-        $turn = $this->game_model->last_turn;
-        $map = new P13Map($game_id, $turn);
-        
-        if(!$map->exists() && isset($_POST['create_map'])){
-            $map->createBlankMap(
-                htmlspecialchars($_POST['map_width']),
-                htmlspecialchars($_POST['map_height'])
-            );
+            $game_id = $this->game_model->id;
+            $turn = $this->game_model->last_turn;
+            $map = new P13Map($game_id, $turn);
+
+            if(!$map->exists() && isset($_POST['create_map'])){
+                $map->createBlankMap(
+                    htmlspecialchars($_POST['map_width']),
+                    htmlspecialchars($_POST['map_height'])
+                );
+            }
+            $map_info = $map->getMapInfo();
+            $map_object_types = (new P13Config($game_id))->getConfigAsArray('land_obj');
+
+            $this->render('map_redactor', array(
+                'map_info' => $map_info,
+                'map_object_types' => $map_object_types
+            ));
+        } else {
+            $this->actionNoAccess();
         }
-        $map_info = $map->getMapInfo();
-        $map_object_types = (new P13Config($game_id))->getConfigAsArray('land_obj');
 
-        $this->render('map_redactor', array(
-            'map_info' => $map_info,
-            'map_object_types' => $map_object_types,
-            'user_model' => $this->user_model,
-            'game_model' => $this->game_model,
-        ));
     }
 
     public function actionTribe()
@@ -141,16 +178,27 @@ class GameController extends Controller
         ));
     }
 
+    /**
+     * Создание карты на основе дефолтной (только для ГМа)
+     */
     public function actionCreate_default_map()
     {
-        $map = new P13Map();
-        $map->loadDefaultMap();
+        // Сначала проверяем роль
+        if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
+            $map = new P13Map();
+            $map->loadDefaultMap();
 
-        $map->saveMap($this->game_model->id, 0);
+            $map->saveMap($this->game_model->id, 0);
 
-        $this->redirect($this->createUrl("game/map_redactor"));
+            $this->redirect($this->createUrl("game/map_redactor"));
+        } else {
+            $this->actionNoAccess();
+        }
     }
 
+    /**
+     * Отображение заглушки, говорящей что страница не доступна этой роли
+     */
     public function actionNoAccess()
     {
         $this->render('no_access');
