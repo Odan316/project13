@@ -15,6 +15,51 @@ body{
     text-align: center;
 }
 
+/*Common Flags Canvas*/
+.tribe_flag_medium{
+    border: 1px solid black;
+    margin: 2px 5px 2px 2px;
+}
+.tribe_flag_medium_pholder{
+    width:25px;
+    height:25px;
+    border: 1px solid black;
+    margin: 2px 5px 2px 2px;
+}
+
+/*GM Page*/
+#b_gm_left{
+    border: 3px solid grey;
+    float:left;
+    width: 250px;
+    height: 695px;
+}
+#b_gm_left h4{
+    text-align: center;
+}
+.b_gm_player{
+    border: 1px solid grey;
+    margin: 0 1px 1px;
+}
+.b_gm_player p{
+    font-weight: bold;
+    padding-left:10px;
+    margin: 0;
+}
+.b_gm_tribe_info{
+    position: relative;
+}
+.b_gm_tribe_name{
+    position: absolute;
+    top:5px;
+    left:34px;
+    width: 205px;
+}
+.but_gm_tribe_edit{
+    position: absolute;
+    right: 0px;
+    top: -4px;
+}
 /* Map Redactor Page */
 #b_blank_map_creation{
     display: none;

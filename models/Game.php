@@ -17,6 +17,11 @@ class Game extends P13Model {
     public $turn;
 
     /**
+     * @var array Массив с объектами Племен
+     */
+    public $tribes;
+
+    /**
      * Конструктор модели
      *
      * @param null|integer $game_id
@@ -99,15 +104,19 @@ class Game extends P13Model {
     }
 
     /**
-     * Может переопределятся в конкретной модели для загрузки сырых данных в свойства модели
+     * Загрузка сырых данных в свойства модели
      */
     protected function processRawData()
     {
-        //$this->attributes = $this->raw_data;
+        if(isset($this->raw_data['tribes'])){
+            foreach($this->raw_data['tribes'] as $tribe){
+                $this->tribes[$tribe['tag']] = $tribe;
+            }
+        }
     }
 
     /**
-     * Может переопределятся в конкретной модели для загрузки свойства модели сырые данные
+     * Выгрузка свойств модели в сырые данные
      */
     protected function parseRawData()
     {
@@ -115,8 +124,28 @@ class Game extends P13Model {
         $this->raw_data['turn'] = $this->turn;
     }
 
+    /**
+     *
+     */
     public function createNewGame()
     {
         $this->save();
+    }
+
+    public function comparePlayers($players_model){
+        $players = array();
+        /** @var Persons $player */
+        foreach($players_model as $player){
+            $players[$player->user_id] = array(
+                'name' => $player->nickname,
+                'tribe_tag' => null
+            );
+        }
+        foreach($this->tribes as $tribe){
+            if(isset($players[$tribe['user_id']])){
+                $players[$tribe['user_id']]['tribe_tag'] = $tribe['tag'];
+            }
+        }
+        return $players;
     }
 } 

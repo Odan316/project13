@@ -29,6 +29,7 @@ class GameController extends Controller
         /** @var $ClientScript CClientScript */
         $ClientScript = Yii::app()->clientScript;
         $ClientScript->registerCssFile($this->module->assetsBase.'/css/styles.css');
+        $ClientScript->registerScriptFile($this->module->assetsBase.'/js/jcanvas.js');
         $ClientScript->registerScriptFile($this->module->assetsBase.'/js/project13.js');
 
         parent::init();
@@ -98,8 +99,15 @@ class GameController extends Controller
     {
         // Сначала проверяем роль
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
-            $players = Games::model()->players_users;
-            $this->render('gm', array('players' => $players));
+            $players_ids = CHtml::listData($this->game_model->players_users, 'id', 'id');
+            $players = Persons::model()->id_in($players_ids)->findAll();
+
+            $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
+            $players = $game_data->comparePlayers($players);
+            $this->render('gm', array(
+                'players' => $players,
+                'game_data' => $game_data
+            ));
         } else {
             $this->actionNoAccess();
         }
@@ -114,7 +122,7 @@ class GameController extends Controller
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
             /** @var $ClientScript CClientScript */
             $ClientScript = Yii::app()->clientScript;
-            $ClientScript->registerScriptFile($this->assetsBase.'/main/js/jquery.json-2.4.js');
+            $ClientScript->registerScriptFile($this->module->assetsBase.'/js/jquery.json-2.4.js');
             $ClientScript->registerScriptFile($this->module->assetsBase.'/js/map_redactor.js');
 
             $game_id = $this->game_model->id;

@@ -101,6 +101,6 @@ class P13Config extends P13Model {
      */
     protected function processRawData()
     {
-        $this->parameters[$this->config_name] = isset($this->raw_data[0]) ? $this->raw_data[0] : $this->raw_data;
+        $this->parameters[$this->config_name] = $this->raw_data;
     }
 } 
