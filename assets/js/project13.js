@@ -48,22 +48,24 @@ function redrawFlags()
 {
     $(".tribe_flag_medium").each(function(){
         color = $(this).data('color');
-        $(this).drawRect({
-            fillStyle: color,
-            x: 13, y: 10,
-            width: 14,
-            height: 10,
-            fromCenter: true
-        }).drawPath({
+        $(this)
+            .draw({
+                fn: function(ctx) {
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(6, 5);
+                    ctx.lineTo(20,10);
+                    ctx.lineTo(6,15);
+                    ctx.fill();
+                }
+            })
+            .drawPath({
                 strokeStyle: '#000',
                 strokeWidth: 2,
                 p1: {
                     type: 'line',
                     x1: 6, y1: 22,
                     x2: 6, y2: 5,
-                    x3: 19, y3: 5,
-                    x4: 19, y4: 14,
-                    x5: 6, y5: 14,
                     closed: true
                 }
             });

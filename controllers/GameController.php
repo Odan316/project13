@@ -106,7 +106,7 @@ class GameController extends Controller
 
             $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
             /** TODO: Получение полной инфы о клетках вероятно избыточно */
-            $area_data = $map->getAreaArray(31, 31, 30, 30);
+            $area_data = $map->getAreaArray(35, 35, 80, 40);
             $this->render('gm', array(
                 'players' => $players,
                 'game_data' => $game_data,
