@@ -260,13 +260,21 @@ class P13Map extends P13Model{
                             'obj_gfx' => $object['object_gfx'],
                             'gfx' => $object_type['gfx'][$object['object_gfx']]
                         );
-                    } else {
+                    } elseif($object_type['category'] == "landobj") {
                         $map_array[$cell['y']][$cell['x']]['objects'][$object['object_type']] = array(
                             'name' => $object_type['name_rus'],
                             'category' => $object_type['category'],
                             'type' => $object['object_type'],
                             'obj_gfx' => $object['object_gfx'],
                             'gfx' => Yii::app()->controller->module->assetsBase.'/images/map_icons/'.$object_type['gfx'][$object['object_gfx']].'.png',
+                        );
+                    } elseif($object_type['category'] == "camp") {
+                        $map_array[$cell['y']][$cell['x']]['objects'][$object['object_type']] = array(
+                            'name' => $object_type['name_rus'],
+                            'category' => $object_type['category'],
+                            'type' => $object['object_type'],
+                            'obj_gfx' => $object['object_gfx'],
+                            'gfx' => $object['object_gfx'],
                         );
                     }
                 }

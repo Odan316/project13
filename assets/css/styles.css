@@ -107,6 +107,11 @@ body{
     width: 15px;
     height: 15px;
 }
+#gm_show_map .map_object_canvas{
+    position: absolute;
+    top:0;
+    left:0;
+}
 #gm_show_map .map_button{
     position: absolute;
 }

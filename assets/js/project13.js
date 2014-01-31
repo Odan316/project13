@@ -1,7 +1,7 @@
 $(function(){
     redrawFlags();
 
-    window.map = new Object();
+    window.map = {};
     b_map = $('.b_map');
     window.map.game_id = b_map.data('game-id');
     if(window.map.game_id != undefined){
@@ -14,7 +14,8 @@ $(function(){
 
 });
 
-function loadMapArea(){
+function loadMapArea()
+{
     $.ajax({
         type: "POST",
         async: false,
@@ -34,12 +35,22 @@ function loadMapArea(){
                         cell = $('#y'+y+'x'+x);
                         cell.css('background-color', json[y][x].landtype.gfx);
                         for(var map_object in json[y][x].objects){
-                            $('<img class="map_object_icon type'+json[y][x].objects[map_object].type+'" />')
-                                .attr('src', json[y][x].objects[map_object].gfx)
-                                .appendTo(cell);
+                            if(json[y][x].objects[map_object].category == "landobj"){
+                                $('<img class="map_object_icon type'+json[y][x].objects[map_object].type+'" />')
+                                    .attr('src', json[y][x].objects[map_object].gfx)
+                                    .appendTo(cell);
+                            } else if(json[y][x].objects[map_object].category == "camp"){
+                                $('<canvas>')
+                                    .attr({"width":"15", "height":"15"})
+                                    .addClass("tribe_flag_small")
+                                    .addClass("map_object_canvas")
+                                    .data("color", json[y][x].objects[map_object].gfx)
+                                    .appendTo(cell);
+                            }
                         }
                     }
                 }
+                redrawFlags();
             }
         }
     });
@@ -72,7 +83,28 @@ function redrawFlags()
     });
     $(".tribe_flag_small").each(function(){
         color = $(this).data('color');
-        $(this).drawRect({
+        $(this)
+            .draw({
+                fn: function(ctx) {
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(4, 2);
+                    ctx.lineTo(13, 6);
+                    ctx.lineTo(4, 10);
+                    ctx.fill();
+                }
+            })
+            .drawPath({
+                strokeStyle: '#000',
+                strokeWidth: 2,
+                p1: {
+                    type: 'line',
+                    x1: 4, y1: 13,
+                    x2: 4, y2: 2,
+                    closed: true
+                }
+            });
+        /*.drawRect({
             fillStyle: color,
             x: 8, y: 5,
             width: 6,
@@ -90,6 +122,6 @@ function redrawFlags()
                 x5: 4, y5: 8,
                 closed: true
             }
-        });
+        });*/
     });
 }

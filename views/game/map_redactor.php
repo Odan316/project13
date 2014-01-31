@@ -33,14 +33,15 @@ $this->setPageTitle('Проект13 - Редактор карты');
                 <div class="object_type_row"
                      data-type="<?=$object_type['id']?>"
                      data-category="<?=$object_type['category']?>">
-                    <? if(($object_type['category'] == 'landtype')): ?>
+                    <? if($object_type['category'] == 'landtype'): ?>
                         <div class="object_type_icon"
                              style="background-color:<?=current($object_type['gfx'])?>"></div>
-                    <? else: ?>
+                        <?=$object_type['name_rus']?>
+                    <? elseif($object_type['category'] == 'landobj'): ?>
                         <img class="object_type_icon"
                              src="<?=$this->module->assetsBase?>/images/map_icons/<?=current($object_type['gfx'])?>.png" />
+                        <?=$object_type['name_rus']?>
                     <? endif ?>
-                    <?=$object_type['name_rus']?>
                 </div>
             <? endforeach ?>
         </div>

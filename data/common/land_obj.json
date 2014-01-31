@@ -124,5 +124,14 @@
             "37": "coast_r_d_u",
             "38": "coast_r_d_l_u"
         }
+    },
+    "12": {
+        "id": "12",
+        "tag": "camp",
+        "category": "camp",
+        "name_rus": "Лагерь",
+		"gfx": {
+			"1": ""
+		}
     }
 }
