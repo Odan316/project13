@@ -1,7 +1,49 @@
 $(function(){
     redrawFlags();
+
+    window.map = new Object();
+    b_map = $('.b_map');
+    window.map.game_id = b_map.data('game-id');
+    if(window.map.game_id != undefined){
+        window.map.area_width = b_map.data('width');
+        window.map.area_height = b_map.data('height');
+        window.map.center_x = b_map.data('x');
+        window.map.center_y = b_map.data('y');
+        loadMapArea();
+    }
+
 });
 
+function loadMapArea(){
+    $.ajax({
+        type: "POST",
+        async: false,
+        url: window.url_root+"project13/game/getAreaInfo",
+        dataType: 'json',
+        data: {
+            "width": window.map.area_width,
+            "height": window.map.area_height,
+            "center_x": window.map.center_x,
+            "center_y": window.map.center_y
+        },
+        success: function(json){
+            if(json && Object.size(json)){
+                window.map.cells = json;
+                for(var y in json){
+                    for(var x in json[y]){
+                        cell = $('#y'+y+'x'+x);
+                        cell.css('background-color', json[y][x].landtype.gfx);
+                        for(var map_object in json[y][x].objects){
+                            $('<img class="map_object_icon type'+json[y][x].objects[map_object].type+'" />')
+                                .attr('src', json[y][x].objects[map_object].gfx)
+                                .appendTo(cell);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
 function redrawFlags()
 {
     $(".tribe_flag_medium").each(function(){

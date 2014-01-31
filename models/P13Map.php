@@ -170,7 +170,9 @@ class P13Map extends P13Model{
         $this->saveMap();
     }
 
-
+    /**
+     * Загружает в модель дефолтную карту
+     */
     public function loadDefaultMap()
     {
         $this->model_path = Yii::app()->getModulePath()."/project13/data/common/";
@@ -213,9 +215,25 @@ class P13Map extends P13Model{
      *
      * @return array
      */
-    public function getMapArray($width, $height, $center_x, $center_y)
+    public function getAreaArray($width, $height, $center_x, $center_y)
     {
-        //TODO: Сделать функцию
+        $cell_data = array();
+        for($y = ($center_y-floor($height/2)); $y <= ($center_y+floor($height/2)); $y++){
+            for($x = ($center_x-floor($width/2)); $x <= ($center_x+floor($width/2)); $x++){
+                if(isset($this->_cells[$y][$x])){
+                    $cell_data[$y][$x] = $this->_cells[$y][$x];
+                }
+            }
+        }
+        return array(
+            "cells" => $this->buildMapArray($cell_data),
+            "map_width" => count($this->_cells[1]),
+            "map_height" => count($this->_cells),
+            "area_width" => $width,
+            "area_height" => $height,
+            "x_center" => $center_x,
+            "y_center" => $center_y
+        );
     }
 
     /**

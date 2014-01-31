@@ -101,12 +101,16 @@ class GameController extends Controller
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
             $players_ids = CHtml::listData($this->game_model->players_users, 'id', 'id');
             $players = Persons::model()->id_in($players_ids)->findAll();
-
             $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
             $players = $game_data->comparePlayers($players);
+
+            $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
+            /** TODO: Получение полной инфы о клетках вероятно избыточно */
+            $area_data = $map->getAreaArray(31, 31, 30, 30);
             $this->render('gm', array(
                 'players' => $players,
-                'game_data' => $game_data
+                'game_data' => $game_data,
+                "area_data" => $area_data
             ));
         } else {
             $this->actionNoAccess();
@@ -221,6 +225,22 @@ class GameController extends Controller
         $map_array = $map->getFullMapArray();
 
         echo json_encode($map_array);
+    }
+
+    /**
+     * (AJAX) Возвращает массив с информацией об участке карты
+     */
+    public function actionGetAreaInfo()
+    {
+        $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
+        $area_data = $map->getAreaArray(
+            htmlspecialchars($_POST['width']),
+            htmlspecialchars($_POST['height']),
+            htmlspecialchars($_POST['center_x']),
+            htmlspecialchars($_POST['center_y'])
+        );
+
+        echo json_encode($area_data['cells']);
     }
 
     /**

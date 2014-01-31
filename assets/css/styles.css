@@ -5,7 +5,7 @@ body{
     width: 1200px;
     background-image: url('../images/design/bg1.jpg');
     border: 1px solid black;
-    margin:0 auto;
+    margin: 0 auto;
 }
 #inner_content{
     min-height: 700px;
@@ -13,6 +13,9 @@ body{
 }
 #footer{
     text-align: center;
+}
+.clear_fix{
+    clear:both;
 }
 
 /*Common Flags Canvas*/
@@ -28,13 +31,23 @@ body{
 }
 
 /*GM Page*/
+#make_turn{
+    width: 216px;
+    display: block;
+}
 #b_gm_left{
-    border: 3px solid grey;
     float:left;
     width: 250px;
-    height: 695px;
+    height: 690px;
 }
-#b_gm_left h4{
+#b_gm_players{
+    margin-top: 10px;
+    height: 635px;
+    width: 250px;
+    border: 3px solid grey;
+    overflow: auto;
+}
+#b_gm_players h4, #b_gm_block_map h4{
     text-align: center;
 }
 .b_gm_player{
@@ -60,23 +73,24 @@ body{
     right: 0px;
     top: -4px;
 }
-/* Map Redactor Page */
-#b_blank_map_creation{
-    display: none;
-}
-#redactor_map_outer{
-    float:left;
-    width: 977px;
-    height: 690px;
-    overflow: auto;
+
+#b_gm_block_map{
     border: 3px solid grey;
+    height: 690px;
+    width: 910px;
+    float: right;
 }
-.map_row{
+#gm_show_map{
+    margin: 35px auto 0;
+    border: 3px solid grey;
+    position: relative;
+}
+#gm_show_map .map_row{
     height: 15px;
     border-bottom: 1px solid black;
     border-left: 1px solid black;
 }
-.map_cell{
+#gm_show_map .map_cell{
     float:left;
     position: relative;
     width: 15px;
@@ -86,7 +100,43 @@ body{
     padding: 0;
     text-align: center;
 }
-.map_object_icon{
+#gm_show_map .map_object_icon{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 15px;
+    height: 15px;
+}
+#gm_show_map .map_button{
+    position: absolute;
+}
+/* Map Redactor Page */
+#b_blank_map_creation{
+    display: none;
+}
+#redactor_map_outer{
+    float: left;
+    width: 977px;
+    height: 690px;
+    overflow: auto;
+    border: 3px solid grey;
+}
+#redactor_map .map_row{
+    height: 15px;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+}
+#redactor_map .map_cell{
+    float:left;
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0;
+    text-align: center;
+}
+#redactor_map .map_object_icon{
     position: absolute;
     top:0;
     left:0;
