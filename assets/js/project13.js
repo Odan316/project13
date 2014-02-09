@@ -104,6 +104,7 @@ function loadMapArea()
                     cell_row++;
                 }
                 redrawFlags();
+                checkMapButtons();
             }
         }
     });
@@ -158,4 +159,23 @@ function redrawFlags()
                 }
             });
     });
+}
+function checkMapButtons()
+{
+    $("#map_left_5").hide();
+    $("#map_right_5").hide();
+    $("#map_up_5").hide();
+    $("#map_down_5").hide();
+    if(window.map.center_x > (window.map.area_width/2)){
+        $("#map_left_5").show();
+    }
+    if(window.map.center_x < (window.map.max_x - (window.map.area_width/2))){
+        $("#map_right_5").show();
+    }
+    if(window.map.center_y > (window.map.area_height/2)){
+        $("#map_up_5").show();
+    }
+    if(window.map.center_y < (window.map.max_y - (window.map.area_height/2))){
+        $("#map_down_5").show();
+    }
 }

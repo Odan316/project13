@@ -67,54 +67,40 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
          data-max-y="<?=$area_data['map_height'];?>"
          data-max-x="<?=$area_data['map_width'];?>"
         >
-        <?if($area_data['x_center'] > $area_data['area_width']/2):?>
-            <?
-            $this->widget('bootstrap.widgets.TbButton',array(
-                'type' => 'warning',
-                'icon' => 'icon-arrow-left',
-                'id' => 'map_left_5',
-                'htmlOptions' => array(
-                    "class" => "map_button",
-                    "style" => "top:".(floor(($area_data['area_width']*16+1)/2)-12)."px;left:-45px")
-            ));
-            ?>
-        <?endif?>
-        <?if(($area_data['map_width'] - $area_data['x_center']) > $area_data['area_width']/2):?>
-            <?
-            $this->widget('bootstrap.widgets.TbButton',array(
-                'type' => 'warning',
-                'icon' => 'icon-arrow-right',
-                'id' => 'map_right_5',
-                'htmlOptions' => array(
-                    "class" => "map_button",
-                    "style" => "top:".(floor(($area_data['area_width']*16+1)/2)-12)."px;right:-45px")
-            ));
-            ?>
-        <?endif?>
-        <?if($area_data['y_center'] > $area_data['area_height']/2):?>
-            <?
-            $this->widget('bootstrap.widgets.TbButton',array(
-                'type' => 'warning',
-                'icon' => 'icon-arrow-up',
-                'id' => 'map_up_5',
-                'htmlOptions' => array(
-                    "class" => "map_button",
-                    "style" => "left:".(floor(($area_data['area_height']*16+1)/2)-22)."px;top:-30px")
-            ));
-            ?>
-        <?endif?>
-        <?if(($area_data['map_height'] - $area_data['y_center']) > $area_data['area_height']/2):?>
-            <?
-            $this->widget('bootstrap.widgets.TbButton',array(
-                'type' => 'warning',
-                'icon' => 'icon-arrow-down',
-                'id' => 'map_down_5',
-                'htmlOptions' => array(
-                    "class" => "map_button",
-                    "style" => "left:".(floor(($area_data['area_width']*16+1)/2)-22)."px;bottom:-30px")
-            ));
-            ?>
-        <?endif?>
+        <?
+        $this->widget('bootstrap.widgets.TbButton',array(
+            'type' => 'warning',
+            'icon' => 'icon-arrow-left',
+            'id' => 'map_left_5',
+            'htmlOptions' => array(
+                "class" => "map_button",
+                "style" => "top:".(floor((($area_data['area_width']+1)*16+1)/2)-12)."px;left:-45px")
+        ));
+        $this->widget('bootstrap.widgets.TbButton',array(
+            'type' => 'warning',
+            'icon' => 'icon-arrow-right',
+            'id' => 'map_right_5',
+            'htmlOptions' => array(
+                "class" => "map_button",
+                "style" => "top:".(floor((($area_data['area_width']+1)*16+1)/2)-12)."px;right:-45px")
+        ));
+        $this->widget('bootstrap.widgets.TbButton',array(
+            'type' => 'warning',
+            'icon' => 'icon-arrow-up',
+            'id' => 'map_up_5',
+            'htmlOptions' => array(
+                "class" => "map_button",
+                "style" => "left:".(floor((($area_data['area_height']+1)*16+1)/2)-22)."px;top:-30px")
+        ));
+        $this->widget('bootstrap.widgets.TbButton',array(
+            'type' => 'warning',
+            'icon' => 'icon-arrow-down',
+            'id' => 'map_down_5',
+            'htmlOptions' => array(
+                "class" => "map_button",
+                "style" => "left:".(floor((($area_data['area_height']+1)*16+1)/2)-22)."px;bottom:-30px")
+        ));
+        ?>
         <div class="map_coord_row">
             <div class="map_x_coord_null"></div>
         <?for($x = 1; $x <= $area_data['area_width']; $x++):?>
