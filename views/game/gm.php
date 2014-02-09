@@ -64,6 +64,8 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
          data-width="<?=$area_data['area_width']?>" data-height="<?=$area_data['area_height']?>"
          data-x="<?=$area_data['x_center']?>" data-y="<?=$area_data['y_center']?>"
          data-game-id="<?=$game_data->id;?>"
+         data-max-y="<?=$area_data['map_height'];?>"
+         data-max-x="<?=$area_data['map_width'];?>"
         >
         <?if($area_data['x_center'] > $area_data['area_width']/2):?>
             <?
@@ -113,15 +115,11 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
             ));
             ?>
         <?endif?>
-        <?for($y = ($area_data['y_center']-floor($area_data['area_height']/2));
-              $y <= ($area_data['y_center']+floor($area_data['area_height']/2));
-              $y++):?>
-            <div class="map_row" id="y<?=$y?>">
-                <?for($x = ($area_data['x_center']-floor($area_data['area_width']/2));
-                      $x <= ($area_data['x_center']+floor($area_data['area_width']/2));
-                      $x++):?>
-                    <div class="map_cell" id="y<?=$y?>x<?=$x?>" data-y="<?=$y?>" data-x="<?=$x?>"></div>
-                <?endfor?>
+        <?for($y = 1; $y <= $area_data['area_height']; $y++):?>
+            <div class="map_row">
+            <?for($x = 1; $x <= $area_data['area_width']; $x++):?>
+                <div class="map_cell" id="r<?=$y?>c<?=$x?>"></div>
+            <?endfor?>
             </div>
         <?endfor?>
     </div>

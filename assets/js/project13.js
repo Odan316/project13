@@ -9,9 +9,38 @@ $(function(){
         window.map.area_height = b_map.data('height');
         window.map.center_x = b_map.data('x');
         window.map.center_y = b_map.data('y');
+        window.map.max_y = b_map.data('max-y');
+        window.map.max_x = b_map.data('max-x');
         loadMapArea();
     }
-
+    $('#map_left_5').on('click', function(){
+        window.map.center_x -= 5;
+        if(window.map.center_x < (window.map.area_width/2)){
+            window.map.center_x = Math.floor(0 + (window.map.area_width/2));
+        }
+        loadMapArea();
+    });
+    $('#map_right_5').on('click', function(){
+        window.map.center_x += 5;
+        if(window.map.center_x > (window.map.max_x - (window.map.area_width/2))){
+            window.map.center_x = Math.ceil(window.map.max_x - (window.map.area_width/2));
+        }
+        loadMapArea();
+    });
+    $('#map_up_5').on('click', function(){
+        window.map.center_y -= 5;
+        if(window.map.center_y < (window.map.area_height/2)){
+            window.map.center_y = Math.floor(0 + (window.map.area_height/2));
+        }
+        loadMapArea();
+    });
+    $('#map_down_5').on('click', function(){
+        window.map.center_y += 5;
+        if(window.map.center_y > (window.map.max_y - (window.map.area_height/2))){
+            window.map.center_y = Math.ceil(window.map.max_y - (window.map.area_height/2));
+        }
+        loadMapArea();
+    });
 });
 
 function loadMapArea()
@@ -30,10 +59,15 @@ function loadMapArea()
         success: function(json){
             if(json && Object.size(json)){
                 window.map.cells = json;
+                cell_row = 1;
+                cell_column = 1;
                 for(var y in json){
                     for(var x in json[y]){
-                        cell = $('#y'+y+'x'+x);
+                        cell = $('#r'+cell_row+'c'+cell_column);
                         cell.css('background-color', json[y][x].landtype.gfx);
+                        cell.data("y", y);
+                        cell.data("x", x);
+                        cell.html('');
                         for(var map_object in json[y][x].objects){
                             if(json[y][x].objects[map_object].category == "landobj"){
                                 $('<img class="map_object_icon type'+json[y][x].objects[map_object].type+'" />')
@@ -48,7 +82,10 @@ function loadMapArea()
                                     .appendTo(cell);
                             }
                         }
+                        cell_column++;
                     }
+                    cell_column = 1;
+                    cell_row++;
                 }
                 redrawFlags();
             }
@@ -104,24 +141,5 @@ function redrawFlags()
                     closed: true
                 }
             });
-        /*.drawRect({
-            fillStyle: color,
-            x: 8, y: 5,
-            width: 6,
-            height: 4,
-            fromCenter: true
-        }).drawPath({
-            strokeStyle: '#000',
-            strokeWidth: 2,
-            p1: {
-                type: 'line',
-                x1: 4, y1: 13,
-                x2: 4, y2: 3,
-                x3: 11, y3: 3,
-                x4: 11, y4: 8,
-                x5: 4, y5: 8,
-                closed: true
-            }
-        });*/
     });
 }

@@ -218,8 +218,8 @@ class P13Map extends P13Model{
     public function getAreaArray($width, $height, $center_x, $center_y)
     {
         $cell_data = array();
-        for($y = ($center_y-floor($height/2)); $y <= ($center_y+floor($height/2)); $y++){
-            for($x = ($center_x-floor($width/2)); $x <= ($center_x+floor($width/2)); $x++){
+        for($y = ($center_y-floor($height/2)); $y <= ($center_y+ceil($height/2)); $y++){
+            for($x = ($center_x-floor($width/2)); $x <= ($center_x+ceil($width/2)); $x++){
                 if(isset($this->_cells[$y][$x])){
                     $cell_data[$y][$x] = $this->_cells[$y][$x];
                 }
