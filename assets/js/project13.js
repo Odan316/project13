@@ -1,6 +1,7 @@
 $(function(){
     redrawFlags();
 
+    /** Map loading */
     window.map = {};
     b_map = $('.b_map');
     window.map.game_id = b_map.data('game-id');
@@ -13,38 +14,28 @@ $(function(){
         window.map.max_x = b_map.data('max-x');
         loadMapArea();
     }
+    /** Binding Map Events */
     $('#map_left_5').on('click', function(){
         window.map.center_x -= 5;
-        if(window.map.center_x < (window.map.area_width/2)){
-            window.map.center_x = Math.floor(0 + (window.map.area_width/2));
-        }
         loadMapArea();
     });
     $('#map_right_5').on('click', function(){
         window.map.center_x += 5;
-        if(window.map.center_x > (window.map.max_x - (window.map.area_width/2))){
-            window.map.center_x = Math.ceil(window.map.max_x - (window.map.area_width/2));
-        }
         loadMapArea();
     });
     $('#map_up_5').on('click', function(){
         window.map.center_y -= 5;
-        if(window.map.center_y < (window.map.area_height/2)){
-            window.map.center_y = Math.floor(0 + (window.map.area_height/2));
-        }
         loadMapArea();
     });
     $('#map_down_5').on('click', function(){
         window.map.center_y += 5;
-        if(window.map.center_y > (window.map.max_y - (window.map.area_height/2))){
-            window.map.center_y = Math.ceil(window.map.max_y - (window.map.area_height/2));
-        }
         loadMapArea();
     });
 });
 
 function loadMapArea()
 {
+    checkMapCoords();
     $.ajax({
         type: "POST",
         async: false,
@@ -109,6 +100,41 @@ function loadMapArea()
         }
     });
 }
+function checkMapCoords()
+{
+    if(window.map.center_x < (window.map.area_width/2)){
+        window.map.center_x = Math.floor(0 + (window.map.area_width/2));
+    }
+    if(window.map.center_x > (window.map.max_x - (window.map.area_width/2))){
+        window.map.center_x = Math.ceil(window.map.max_x - (window.map.area_width/2));
+    }
+    if(window.map.center_y < (window.map.area_height/2)){
+        window.map.center_y = Math.floor(0 + (window.map.area_height/2));
+    }
+    if(window.map.center_y > (window.map.max_y - (window.map.area_height/2))){
+        window.map.center_y = Math.ceil(window.map.max_y - (window.map.area_height/2));
+    }
+}
+function checkMapButtons()
+{
+    $("#map_left_5").hide();
+    $("#map_right_5").hide();
+    $("#map_up_5").hide();
+    $("#map_down_5").hide();
+    if(window.map.center_x > (window.map.area_width/2)){
+        $("#map_left_5").show();
+    }
+    if(window.map.center_x < (window.map.max_x - (window.map.area_width/2))){
+        $("#map_right_5").show();
+    }
+    if(window.map.center_y > (window.map.area_height/2)){
+        $("#map_up_5").show();
+    }
+    if(window.map.center_y < (window.map.max_y - (window.map.area_height/2))){
+        $("#map_down_5").show();
+    }
+}
+
 function redrawFlags()
 {
     $(".tribe_flag_medium").each(function(){
@@ -159,23 +185,4 @@ function redrawFlags()
                 }
             });
     });
-}
-function checkMapButtons()
-{
-    $("#map_left_5").hide();
-    $("#map_right_5").hide();
-    $("#map_up_5").hide();
-    $("#map_down_5").hide();
-    if(window.map.center_x > (window.map.area_width/2)){
-        $("#map_left_5").show();
-    }
-    if(window.map.center_x < (window.map.max_x - (window.map.area_width/2))){
-        $("#map_right_5").show();
-    }
-    if(window.map.center_y > (window.map.area_height/2)){
-        $("#map_up_5").show();
-    }
-    if(window.map.center_y < (window.map.max_y - (window.map.area_height/2))){
-        $("#map_down_5").show();
-    }
 }

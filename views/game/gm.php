@@ -25,7 +25,7 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
                 <p><?=$player['name']?></p>
                 <div class="b_gm_tribe_info">
                     <? if($player['tribe_tag'] !== null): ?>
-                        <canvas width='25' height='25' class="tribe_flag_medium" data-color="#FF0000"></canvas>
+                        <canvas width='25' height='25' class="tribe_flag_medium" data-color="<?=$game_data->tribes[$player['tribe_tag']]['color']?>"></canvas>
                         <div class="b_gm_tribe_name">
                             <?=$game_data->tribes[$player['tribe_tag']]['name']?>
                             <?
