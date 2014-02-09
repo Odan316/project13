@@ -80,17 +80,17 @@ body{
     width: 910px;
     float: right;
 }
-#gm_show_map{
+.b_map{
     margin: 35px auto 0;
     border: 3px solid grey;
     position: relative;
 }
-#gm_show_map .map_row{
+.b_map .map_row{
     height: 15px;
     border-bottom: 1px solid black;
     border-left: 1px solid black;
 }
-#gm_show_map .map_cell{
+.b_map .map_cell{
     float:left;
     position: relative;
     width: 15px;
@@ -100,12 +100,12 @@ body{
     padding: 0;
     text-align: center;
 }
-#gm_show_map .map_coord_row{
+.b_map .map_coord_row{
     height: 15px;
     border-bottom: 1px solid black;
     border-left: 1px solid black;
 }
-#gm_show_map .map_y_coord, #gm_show_map .map_x_coord, #gm_show_map .map_x_coord_null{
+.b_map .map_y_coord, .b_map .map_x_coord, .b_map .map_x_coord_null{
     float:left;
     position: relative;
     border-top: 1px solid black;
@@ -116,31 +116,31 @@ body{
     background-color: white;
     font-size: 10px;
 }
-#gm_show_map .map_x_coord_null{
+.b_map .map_x_coord_null{
     width: 15px;
     height: 15px;
 }
-#gm_show_map .map_x_coord{
+.b_map .map_x_coord{
     width: 15px;
     height: 15px;
 }
-#gm_show_map .map_y_coord{
+.b_map .map_y_coord{
     width: 15px;
     height: 15px;
 }
-#gm_show_map .map_object_icon{
+.b_map .map_object_icon{
     position: absolute;
     top:0;
     left:0;
     width: 15px;
     height: 15px;
 }
-#gm_show_map .map_object_canvas{
+.b_map .map_object_canvas{
     position: absolute;
     top:0;
     left:0;
 }
-#gm_show_map .map_button{
+.b_map .map_button{
     position: absolute;
 }
 /* Map Redactor Page */
