@@ -59,6 +59,22 @@ function loadMapArea()
         success: function(json){
             if(json && Object.size(json)){
                 window.map.cells = json;
+                y_cord = 1;
+                x_cord = 1;
+                first_y = true;
+                y_id = 0;
+                for(var y in json){
+                    if(first_y){
+                        first_y = false;
+                        y_id = y;
+                    }
+                    $("#ycord"+y_cord).text(y);
+                    y_cord++;
+                }
+                for(var x in json[y_id]){
+                    $("#xcord"+x_cord).text(x);
+                    x_cord++;
+                }
                 cell_row = 1;
                 cell_column = 1;
                 for(var y in json){

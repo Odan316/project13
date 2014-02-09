@@ -60,7 +60,7 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
 <div id="b_gm_block_map">
     <h4>Карта</h4>
     <div id="gm_show_map" class="b_map"
-         style="width:<?=($area_data['area_width']*16+1).'px;'; ?>; height:<?=($area_data['area_height']*16).'px;'; ?>;"
+         style="width:<?=(($area_data['area_width']+1)*16+1).'px;'; ?>; height:<?=(($area_data['area_height']+1)*16).'px;'; ?>;"
          data-width="<?=$area_data['area_width']?>" data-height="<?=$area_data['area_height']?>"
          data-x="<?=$area_data['x_center']?>" data-y="<?=$area_data['y_center']?>"
          data-game-id="<?=$game_data->id;?>"
@@ -115,8 +115,15 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
             ));
             ?>
         <?endif?>
+        <div class="map_coord_row">
+            <div class="map_x_coord_null"></div>
+        <?for($x = 1; $x <= $area_data['area_width']; $x++):?>
+            <div class="map_x_coord" id="xcord<?=$x?>"></div>
+        <?endfor?>
+        </div>
         <?for($y = 1; $y <= $area_data['area_height']; $y++):?>
             <div class="map_row">
+                <div class="map_y_coord" id="ycord<?=$y?>"></div>
             <?for($x = 1; $x <= $area_data['area_width']; $x++):?>
                 <div class="map_cell" id="r<?=$y?>c<?=$x?>"></div>
             <?endfor?>
