@@ -99,6 +99,10 @@ class GameController extends Controller
     {
         // Сначала проверяем роль
         if(Yii::app()->user->getState('game_role') == Game_roles::GM_ROLE){
+            /** @var $ClientScript CClientScript */
+            $ClientScript = Yii::app()->clientScript;
+            $ClientScript->registerScriptFile($this->module->assetsBase.'/js/gm.js');
+
             $players_ids = CHtml::listData($this->game_model->players_users, 'id', 'id');
             $players = Persons::model()->id_in($players_ids)->findAll();
             $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
@@ -264,5 +268,32 @@ class GameController extends Controller
         $map->setData($map_data);
 
         echo $map->saveMap();
+    }
+
+    /**
+     * (AJAX) Сохраняет информацию о племени
+     */
+    public function actionGMSaveTribe()
+    {
+        $player_id = htmlspecialchars($_POST['player_id']);
+        $game = new Game($this->game_model->id, $this->game_model->last_turn);
+        //CVarDumper::dump($game, 10, 1);
+        $tribe = $game->getTribeByPlayer($player_id);
+
+        $tag = htmlspecialchars($_POST['tribe_tag']);
+        $color = htmlspecialchars($_POST['tribe_color']);
+        $name = htmlspecialchars($_POST['tribe_name']);
+
+        if($tribe !== false) {
+            $tribe->name = ($name ? $name : $tribe->name);
+            $tribe->color = ($color ? $color : $tribe->color);
+            $result = $game->saveTribe($tribe->tag, $tribe);
+        } else {
+            $start_x = htmlspecialchars($_POST['tribe_start_x']);
+            $start_y = htmlspecialchars($_POST['tribe_start_y']);
+            $result = $game->addNewTribe($player_id, $tag, $color, $name, $start_x, $start_y);
+        }
+
+        echo json_encode(array("result" => $result));
     }
 }

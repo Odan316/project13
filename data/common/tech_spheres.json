@@ -1,0 +1,11 @@
+{
+    "production": {
+        "name_rus": "Хозтех"
+    },
+    "war": {
+        "name_rus": "Воентех"
+    },
+    "social": {
+        "name_rus": "Соцтех"
+    }
+}

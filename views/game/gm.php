@@ -23,35 +23,32 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
         foreach($players as $user_id => $player):?>
             <div class="b_gm_player">
                 <p><?=$player['name']?></p>
-                <div class="b_gm_tribe_info">
+                <div
+                    class="b_gm_tribe_info"
+                    data-tribe-tag="<?=$player['tribe_tag']?>"
+                    data-player-id="<?=$user_id?>"
+                    >
                     <? if($player['tribe_tag'] !== null): ?>
-                        <canvas width='25' height='25' class="tribe_flag_medium" data-color="<?=$game_data->tribes[$player['tribe_tag']]['color']?>"></canvas>
+                        <canvas width='25' height='25' class="tribe_flag_medium"
+                                data-color="<?=$game_data->tribes[$player['tribe_tag']]->color?>"></canvas>
                         <div class="b_gm_tribe_name">
-                            <?=$game_data->tribes[$player['tribe_tag']]['name']?>
-                            <?
-                            $this->widget('bootstrap.widgets.TbButton',array(
-                                'label' => 'Ред.',
-                                'type' => 'secondary',
-                                'size' => 'small',
-                                "htmlOptions" => array('class' => "but_gm_tribe_edit")
-                            ));
-                            ?>
-                        </div>
+                            <?=$game_data->tribes[$player['tribe_tag']]->name?>
                     <? else: ?>
                         <div class="tribe_flag_medium_pholder"></div>
                         <div class="b_gm_tribe_name">
                             Нет
+                    <? endif; ?>
                             <?
                             $this->widget('bootstrap.widgets.TbButton',array(
-                                'label' => 'Создать',
+                                'label' => 'Доб./Ред.',
                                 'type' => 'secondary',
                                 'size' => 'small',
-                                "htmlOptions" => array('class' => "but_gm_tribe_edit")
+                                "htmlOptions" => array(
+                                    'class' => "but_gm_tribe_edit"
+                                )
                             ));
                             ?>
                         </div>
-                    <? endif; ?>
-
                 </div>
             </div>
         <?endforeach?>
@@ -60,7 +57,7 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
 <div id="b_gm_block_map">
     <h4>Карта</h4>
     <div id="gm_show_map" class="b_map"
-         style="width:<?=(($area_data['area_width']+1)*16+1).'px;'; ?>; height:<?=(($area_data['area_height']+1)*16).'px;'; ?>;"
+         style="width:<?=(($area_data['area_width']+1)*16+6).'px;'; ?>; height:<?=(($area_data['area_height']+1)*16+5).'px;'; ?>;"
          data-width="<?=$area_data['area_width']?>" data-height="<?=$area_data['area_height']?>"
          data-x="<?=$area_data['x_center']?>" data-y="<?=$area_data['y_center']?>"
          data-game-id="<?=$game_data->id;?>"
@@ -116,4 +113,30 @@ $this->setPageTitle('Проект13 - Кабинет Ведущего');
             </div>
         <?endfor?>
     </div>
+</div>
+<div class="edit_tribe">
+    <?=CHtml::hiddenField("player_id")?>
+    <div class="b_new_tribe_set">
+        <p>Тэг:</p>
+        <?=CHtml::textField("tribe_tag")?>
+    </div>
+    <p>Имя:</p>
+    <?=CHtml::textField("tribe_name")?>
+    <p>Цвет:</p>
+    <?=CHtml::textField("tribe_color")?>
+    <div class="b_new_tribe_set">
+        <p>Координаты первой общины:</p>
+        x:<?=CHtml::textField("tribe_start_x", "", array("style" => "width:60px;"))?>
+        y:<?=CHtml::textField("tribe_start_y", "", array("style" => "width:60px;"))?>
+    </div>
+    <?
+    $this->widget('bootstrap.widgets.TbButton',array(
+        'label' => 'Сохранить',
+        'type' => 'secondary',
+        'size' => 'small',
+        "htmlOptions" => array(
+            'class' => "but_gm_tribe_save"
+        )
+    ));
+    ?>
 </div>

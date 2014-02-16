@@ -35,6 +35,8 @@ class P13Config extends P13Model {
      *
      * @param string|array $config
      * @param null|integer $game_id
+     *
+     * @return P13Config
      */
     public function load($config, $game_id = null)
     {
@@ -46,6 +48,8 @@ class P13Config extends P13Model {
             $this->setPaths($game_id);
             $this->loadFromFile();
         }
+
+        return $this;
     }
 
     /**

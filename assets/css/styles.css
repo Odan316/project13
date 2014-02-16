@@ -80,6 +80,10 @@ body{
     width: 910px;
     float: right;
 }
+.edit_tribe{
+    display:none;
+}
+/** Map CSS **/
 .b_map{
     margin: 35px auto 0;
     border: 3px solid grey;

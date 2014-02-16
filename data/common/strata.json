@@ -1,0 +1,59 @@
+{
+    "aristocracy":{
+        "name_rus": "Аристократы",
+        "amount": 1,
+        "fixed_amount": 1,
+        "allow_children": false
+    },
+    "hunters":{
+        "name_rus": "Охотники",
+        "amount": 10,
+        "allow_children": true
+    },
+    "gatherers":{
+        "name_rus": "Собиратели",
+        "amount": 10,
+        "allow_children": true
+    },
+    "warriors":{
+        "name_rus": "Воины",
+        "amount": 0,
+        "limit_amount": 0,
+        "limit_pct": 0,
+        "allow_children": false
+    },
+    "herdmen":{
+        "name_rus": "Скотоводы",
+        "amount": 0,
+        "limit_amount": 0,
+        "limit_pct": 0,
+        "allow_children": false
+    },
+    "farmers":{
+        "name_rus": "Земледельцы",
+        "amount": 0,
+        "limit_amount": 0,
+        "limit_pct": 0,
+        "allow_children": false
+    },
+    "shamans":{
+        "name_rus": "Шаманы",
+        "amount": 0,
+        "limit_amount": 0,
+        "limit_pct": 0,
+        "allow_children": false
+    },
+    "prests":{
+        "name_rus": "Священники",
+        "amount": 0,
+        "limit_amount": 0,
+        "limit_pct": 0,
+        "allow_children": false
+    },
+    "oldmen":{
+        "name_rus": "Старики",
+        "amount": 0,
+        "fixed_pct": 0.3,
+        "allow_children": false
+    }
+}

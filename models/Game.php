@@ -12,6 +12,11 @@ class Game extends P13Model {
     public $id;
 
     /**
+     * @var P13Config
+     */
+    public $config;
+
+    /**
      * @var int ИД хода
      */
     public $turn;
@@ -19,7 +24,7 @@ class Game extends P13Model {
     /**
      * @var array Массив с объектами Племен
      */
-    public $tribes;
+    public $tribes = array();
 
     /**
      * Конструктор модели
@@ -30,6 +35,7 @@ class Game extends P13Model {
     public function __construct($game_id = null, $turn = null)
     {
         $this->load($game_id, $turn);
+        $this->config = new P13Config($this->id);
     }
 
     /**
@@ -95,12 +101,14 @@ class Game extends P13Model {
      *
      * @param null|integer $game_id
      * @param null|integer $turn
+     *
+     * @return bool
      */
     public function save($game_id = null, $turn = null)
     {
         $this->setPaths($game_id, $turn);
 
-        $this->saveToFile();
+        return $this->saveToFile();
     }
 
     /**
@@ -110,7 +118,8 @@ class Game extends P13Model {
     {
         if(isset($this->raw_data['tribes'])){
             foreach($this->raw_data['tribes'] as $tribe){
-                $this->tribes[$tribe['tag']] = $tribe;
+                //CVarDumper::dump($tribe, 1, 1);
+                $this->tribes[$tribe['tag']] = new Tribe($this, $tribe);
             }
         }
     }
@@ -122,6 +131,10 @@ class Game extends P13Model {
     {
         $this->raw_data['id'] = $this->id;
         $this->raw_data['turn'] = $this->turn;
+        /** @var Tribe $tribe */
+        foreach($this->tribes as $tribe){
+            $this->raw_data['tribes'][$tribe->tag] = $tribe->getParsedData();
+        }
     }
 
     /**
@@ -141,11 +154,72 @@ class Game extends P13Model {
                 'tribe_tag' => null
             );
         }
+        /** @var Tribe $tribe */
         foreach($this->tribes as $tribe){
-            if(isset($players[$tribe['user_id']])){
-                $players[$tribe['user_id']]['tribe_tag'] = $tribe['tag'];
+            if(isset($players[$tribe->player_id])){
+                $players[$tribe->player_id]['tribe_tag'] = $tribe->tag;
             }
         }
         return $players;
+    }
+
+    /**
+     * Возвращает массив с информацией о племени по ИД игрока
+     * или false если у такого игрока нет еще племени
+     *
+     * @param $player_id
+     *
+     * @return Tribe|bool
+     */
+    public function getTribeByPlayer($player_id)
+    {
+        foreach($this->tribes as $tribe){
+            if($tribe->player_id == $player_id){
+                return $tribe;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Добавление нового племени в игре
+     * @param $player_id
+     * @param $tag
+     * @param $color
+     * @param $name
+     * @param $start_x
+     * @param $start_y
+     * @return bool
+     */
+    public function addNewTribe($player_id, $tag, $color, $name, $start_x, $start_y)
+    {
+        $this->tribes[$tag] = (new Tribe($this))->createNew($tag, $player_id, $name, $color, $start_x, $start_y);
+        return $this->save();
+    }
+
+    /**
+     * Сохраняет новую инофрмацию о племени
+     *
+     * @param $tag
+     * @param $tribe
+     *
+     * @return bool
+     */
+    public function saveTribe($tag, $tribe)
+    {
+        $this->tribes[$tag] = $tribe;
+        return $this->save();
+    }
+
+    /**
+     * @param $tribe_tag
+     *
+     * @return array
+     */
+    public function createNewClan($tribe_tag)
+    {
+        return array(
+
+        );
     }
 } 
