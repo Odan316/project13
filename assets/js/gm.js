@@ -33,7 +33,7 @@ function saveTribe(tribe_form){
             "tribe_name": tribe_form.find('input[name=tribe_name]').val(),
             "tribe_color": tribe_form.find('input[name=tribe_color]').val(),
             "tribe_start_x": tribe_form.find('input[name=tribe_start_x]').val(),
-            "tribe_start_y": tribe_form.find('input[name=tribe_start_x]').val()
+            "tribe_start_y": tribe_form.find('input[name=tribe_start_y]').val()
         },
         success: function(data){
             if(data.result == true){

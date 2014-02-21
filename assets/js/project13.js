@@ -164,13 +164,24 @@ function redrawFlags()
     $(".tribe_flag_small").each(function(){
         color = $(this).data('color');
         $(this)
+            .drawPath({
+                strokeStyle: '#000',
+                strokeWidth: 2,
+                p1: {
+                    type: 'line',
+                    x1: 3, y1: 2,
+                    x2: 13, y2: 7,
+                    x3: 3, y3: 12,
+                    closed: true
+                }
+            })
             .draw({
                 fn: function(ctx) {
                     ctx.fillStyle = color;
                     ctx.beginPath();
-                    ctx.moveTo(4, 2);
-                    ctx.lineTo(13, 6);
-                    ctx.lineTo(4, 10);
+                    ctx.moveTo(3, 2);
+                    ctx.lineTo(13, 7);
+                    ctx.lineTo(3, 12);
                     ctx.fill();
                 }
             })
@@ -179,7 +190,7 @@ function redrawFlags()
                 strokeWidth: 2,
                 p1: {
                     type: 'line',
-                    x1: 4, y1: 13,
+                    x1: 4, y1: 15,
                     x2: 4, y2: 2,
                     closed: true
                 }

@@ -236,6 +236,29 @@ class P13Map extends P13Model{
         );
     }
 
+
+    /**
+     * Возвращает массив с общей информацией об участке карты в формате для отсылки на фронт
+     *
+     * @param $width
+     * @param $height
+     * @param $center_x
+     * @param $center_y
+     *
+     * @return array
+     */
+    public function getAreaInfo($width, $height, $center_x, $center_y)
+    {
+        return array(
+            "map_width" => count($this->_cells[1]),
+            "map_height" => count($this->_cells),
+            "area_width" => $width,
+            "area_height" => $height,
+            "x_center" => $center_x,
+            "y_center" => $center_y
+        );
+    }
+
     /**
      * Формирует массив с полной информацией о выбранных клетках в формате для отсылки на фронт
      *
@@ -270,11 +293,10 @@ class P13Map extends P13Model{
                         );
                     } elseif($object_type['category'] == "camp") {
                         $map_array[$cell['y']][$cell['x']]['objects'][$object['object_type']] = array(
-                            'name' => $object_type['name_rus'],
+                            'name' => $object['name'],
                             'category' => $object_type['category'],
                             'type' => $object['object_type'],
-                            'obj_gfx' => $object['object_gfx'],
-                            'gfx' => $object['object_gfx'],
+                            'gfx' => $object['gfx'],
                         );
                     }
                 }
@@ -337,7 +359,7 @@ class P13Map extends P13Model{
     /**
      * Возвращает информацию о типе объекта
      *
-     * @param $object_type_id ИД типа объекта
+     * @param int $object_type_id ИД типа объекта
      *
      * @return array()
      *
@@ -359,6 +381,24 @@ class P13Map extends P13Model{
         return $return_list;
     }
 
-
+    /**
+     * Добавление на карту объектов общин
+     *
+     * @param array $tribes Модель игры
+     */
+    public function addTribes($tribes)
+    {
+        /** @var Tribe $tribe */
+        foreach($tribes as $tribe){
+            /** @var Clan $clan */
+            foreach($tribe->clans as $clan){
+                $this->_cells[$clan->y][$clan->x]['objects'][] = array(
+                    'name' => $clan->tribe_model->name.($clan->main ? "(*)" : ""),
+                    'object_type' => "camp",
+                    'gfx' => $clan->tribe_model->color
+                );
+            }
+        }
+    }
 
 } 

@@ -107,6 +107,7 @@ class Tribe {
             if($field == "game_model"){
                 // не сохраняем, т.к. будет рекурсия
             } elseif($field == "clans"){
+                /** @var Clan $clan */
                 foreach($value as $clan_tag => &$clan){
                     $parsed_data[$field][$clan_tag] = $clan->getParsedData();
                 }
@@ -146,7 +147,7 @@ class Tribe {
             $this->tech_levels[$sphere] = 0;
         }
 
-        $this->clans[$tag."1"] = (new Clan($this))->createNew($this->game_model->id, $tag, $start_x, $start_y);
+        $this->clans[$tag."1"] = (new Clan($this))->createNew($start_x, $start_y);
 
         return $this;
     }

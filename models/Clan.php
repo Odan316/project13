@@ -9,7 +9,7 @@ class Clan {
     /**
      * @var Tribe Модель племени
      */
-    private $tribe_model;
+    public  $tribe_model;
     /**
      * @var string Тэг общины
      */

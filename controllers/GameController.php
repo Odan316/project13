@@ -109,8 +109,8 @@ class GameController extends Controller
             $players = $game_data->comparePlayers($players);
 
             $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
-            /** TODO: Получение полной инфы о клетках вероятно избыточно */
-            $area_data = $map->getAreaArray(35, 35, 80, 40);
+
+            $area_data = $map->getAreaInfo(35, 35, 80, 40);
             $this->render('gm', array(
                 'players' => $players,
                 'game_data' => $game_data,
@@ -237,6 +237,8 @@ class GameController extends Controller
     public function actionGetAreaInfo()
     {
         $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
+        $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
+        $map->addTribes($game_data->tribes);
         $area_data = $map->getAreaArray(
             htmlspecialchars($_POST['width']),
             htmlspecialchars($_POST['height']),
