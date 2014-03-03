@@ -133,7 +133,7 @@ class Tribe {
      */
     public function createNew($tag, $player_id, $name, $color = "#808080", $start_x, $start_y)
     {
-        $this->tag = $tag;
+        $this->tag = strtoupper(substr($tag, 0, 3));
         $this->player_id = $player_id;
         $this->name = $name;
         $this->color = $color;
@@ -147,9 +147,23 @@ class Tribe {
             $this->tech_levels[$sphere] = 0;
         }
 
-        $this->clans[$tag."1"] = (new Clan($this))->createNew($start_x, $start_y);
+        $this->clans[$tag."1"] = (new Clan($this))->createNew($start_x, $start_y, true);
 
         return $this;
+    }
+
+    /**
+     * Возвращает Главную общину племени
+     * @return Clan
+     */
+    public function getMainClan(){
+        /** @var Clan $clan */
+        foreach($this->clans as $clan){
+            if($clan->main == true){
+                return $clan;
+            }
+        }
+        return false;
     }
 }
 ?>

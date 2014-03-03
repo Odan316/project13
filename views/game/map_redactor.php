@@ -10,7 +10,7 @@ $this->setPageTitle('Проект13 - Редактор карты');
     <div id="redactor_map_outer">
         <div id="redactor_map"
             data-game-id="<?=Yii::app()->request->cookies['game_id']->value;?>"
-            style="width:<?=($map_info['width']*16+1).'px;'; ?>">
+            style="width:<?=($map_info['width']*16+13).'px;'; ?>">
             <?for($y = 1; $y <= $map_info['height']; $y++):?>
                 <div class="map_row" id="y<?=$y?>">
                     <?for($x = 1; $x <= $map_info['width']; $x++):?>

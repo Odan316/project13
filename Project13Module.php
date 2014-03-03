@@ -9,7 +9,7 @@ class Project13Module extends CWebModule
 		$this->setImport(array(
 			'project13.models.*',
 			'project13.components.*',
-            'project13.map.*',
+            'project13.widgets.*',
 		));
 	}
 

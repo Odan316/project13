@@ -103,14 +103,13 @@ class GameController extends Controller
             $ClientScript = Yii::app()->clientScript;
             $ClientScript->registerScriptFile($this->module->assetsBase.'/js/gm.js');
 
+            $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
+
             $players_ids = CHtml::listData($this->game_model->players_users, 'id', 'id');
             $players = Persons::model()->id_in($players_ids)->findAll();
-            $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
             $players = $game_data->comparePlayers($players);
 
-            $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
-
-            $area_data = $map->getAreaInfo(35, 35, 80, 40);
+            $area_data = $game_data->map->getAreaInfo(35, 35, 80, 40);
             $this->render('gm', array(
                 'players' => $players,
                 'game_data' => $game_data,
@@ -158,7 +157,19 @@ class GameController extends Controller
 
     public function actionTribe()
     {
+        $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
+
+        $tribe = $game_data->getTribeByPlayer($this->user_model->id);
+        $main_clan = $tribe->getMainClan();
+
+        if($main_clan !== false){
+            $area_data = $game_data->map->getAreaInfo(35, 35, $main_clan->x, $main_clan->y);
+        } else {
+            $area_data = $game_data->map->getAreaInfo(35, 35, 0, 0);
+        }
         $this->render('tribe', array(
+            'game_data' => $game_data,
+            'area_data' => $area_data
         ));
     }
 
@@ -236,10 +247,9 @@ class GameController extends Controller
      */
     public function actionGetAreaInfo()
     {
-        $map = new P13Map($this->game_model->id, $this->game_model->last_turn);
         $game_data = new Game($this->game_model->id, $this->game_model->last_turn);
-        $map->addTribes($game_data->tribes);
-        $area_data = $map->getAreaArray(
+        $game_data->map->addTribes($game_data->tribes);
+        $area_data = $game_data->map->getAreaArray(
             htmlspecialchars($_POST['width']),
             htmlspecialchars($_POST['height']),
             htmlspecialchars($_POST['center_x']),
@@ -279,7 +289,6 @@ class GameController extends Controller
     {
         $player_id = htmlspecialchars($_POST['player_id']);
         $game = new Game($this->game_model->id, $this->game_model->last_turn);
-        //CVarDumper::dump($game, 10, 1);
         $tribe = $game->getTribeByPlayer($player_id);
 
         $tag = htmlspecialchars($_POST['tribe_tag']);

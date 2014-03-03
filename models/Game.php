@@ -22,6 +22,11 @@ class Game extends P13Model {
     public $turn;
 
     /**
+     * @var P13Map Карта
+     */
+    public $map;
+
+    /**
      * @var array Массив с объектами Племен
      */
     public $tribes = array();
@@ -36,6 +41,7 @@ class Game extends P13Model {
     {
         $this->load($game_id, $turn);
         $this->config = new P13Config($this->id);
+        $this->map = new P13Map($this->id, $this->turn);
     }
 
     /**
@@ -193,6 +199,9 @@ class Game extends P13Model {
      */
     public function addNewTribe($player_id, $tag, $color, $name, $start_x, $start_y)
     {
+        if($start_x > $this->map->getWidth() || $start_y > $this->map->getHeight()){
+            return false;
+        }
         $this->tribes[$tag] = (new Tribe($this))->createNew($tag, $player_id, $name, $color, $start_x, $start_y);
         return $this->save();
     }

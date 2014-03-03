@@ -382,6 +382,22 @@ class P13Map extends P13Model{
     }
 
     /**
+     * Возвращает ширину карты
+     * @return int
+     */
+    public function getWidth(){
+        return count($this->_cells[1]);
+    }
+
+    /**
+     * Возвращает высоту карты
+     * @return int
+     */
+    public function getHeight(){
+        return count($this->_cells);
+    }
+
+    /**
      * Добавление на карту объектов общин
      *
      * @param array $tribes Модель игры
@@ -400,5 +416,7 @@ class P13Map extends P13Model{
             }
         }
     }
+
+
 
 } 

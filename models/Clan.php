@@ -69,15 +69,18 @@ class Clan {
     /**
      * Создание новой общины
      *
-     * @param $x
-     * @param $y
-     * @return $this|bool
+     * @param int $x
+     * @param int $y
+     * @param bool $is_main
+     *
+     * @return Clan|bool
      */
-    public function createNew($x, $y)
+    public function createNew($x, $y, $is_main = false)
     {
         $this->tag = $this->tribe_model->tag."1";
         $this->x = $x;
         $this->y = $y;
+        $this->main = $is_main;
 
         if(empty($this->x) || empty($this->y)){
             return false;
